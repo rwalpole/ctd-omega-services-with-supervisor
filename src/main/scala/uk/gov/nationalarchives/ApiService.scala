@@ -1,22 +1,20 @@
 package uk.gov.nationalarchives
 
 import cats.effect.IO
-import cats.effect.kernel.Fiber
-import cats.effect.std.Supervisor
 
 import scala.concurrent.duration.DurationInt
 
 class ApiService {
 
-  def start: IO[Unit] = print().foreverM
+  def start: IO[Unit] = IO.println("Starting API Service") *> print().foreverM
 
-  def print() =
+  def stop(): IO[Unit] = IO.println("Closing the API Service")
+
+  private def print(): IO[Unit] =
     for {
       time <- IO.realTimeInstant
       _ <- IO.println(s"Current data and time is $time")
       _ <- IO.sleep(1.second)
     } yield ()
-
-  def stop() = IO.println("Closing the background task")
 
 }
