@@ -2,8 +2,6 @@ package uk.gov.nationalarchives
 
 import cats.effect.{IO, IOApp}
 
-import scala.concurrent.duration.DurationInt
-
 object ApiServiceApp extends IOApp.Simple {
 
   private val service = new ApiService
