@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
     "org.typelevel" %% "cats-effect-kernel" % "3.4.7",
     // standard "effect" library (Queues, Console, Random etc.)
     "org.typelevel" %% "cats-effect-std" % "3.4.7",
+    "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0" % Test,
     // better monadic for compiler plugin as suggested by documentation
     compilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
   )
