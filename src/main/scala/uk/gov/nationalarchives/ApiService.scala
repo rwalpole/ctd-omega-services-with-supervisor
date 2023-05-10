@@ -6,7 +6,7 @@ import scala.concurrent.duration.DurationInt
 
 class ApiService {
 
-  def start: IO[Unit] = IO.println("Starting API Service") *> print().foreverM
+  def start: IO[Unit] = IO.println("Starting API Service") *> print().foreverM.background
 
   def stop(): IO[Unit] = IO.println("Closing the API Service")
 

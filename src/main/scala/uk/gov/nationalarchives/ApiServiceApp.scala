@@ -6,7 +6,7 @@ object ApiServiceApp extends IOApp.Simple {
 
   private val service = new ApiService
 
-  private val task = service.start
+  private val task: IO[Unit] = service.start
 
   private val backgroundApiService = task.onCancel(service.stop()).background
 
