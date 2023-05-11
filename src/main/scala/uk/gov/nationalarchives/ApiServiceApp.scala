@@ -1,19 +1,17 @@
 package uk.gov.nationalarchives
 
-import cats.effect.{IO, IOApp}
+import cats.effect.{ExitCode, IO, IOApp}
 
 import scala.concurrent.duration.DurationInt
 
-object ApiServiceApp extends IOApp.Simple {
+object ApiServiceApp extends IOApp {
 
-  private val service = new ApiService
+  override def run(args: List[String]): IO[ExitCode] = {
 
-  private val task = service.start
+    val service = new ApiService
+    service.start
+      .onCancel(service.stop())
+      .as(ExitCode.Success)
 
-  private val backgroundApiService = task.onCancel(service.stop()).background
-
-  val run: IO[Unit] = backgroundApiService.useForever
-
-
-
+  }
 }
