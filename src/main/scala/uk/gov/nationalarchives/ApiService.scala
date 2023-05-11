@@ -2,11 +2,14 @@ package uk.gov.nationalarchives
 
 import cats.effect.IO
 
+import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.duration.DurationInt
 
 class ApiService {
 
-  def start: IO[Unit] = IO.println("Starting API Service") *> print()
+  val counter = new AtomicInteger()
+
+  def start: IO[Unit] = IO.blocking(counter.incrementAndGet()).flatMap(count => IO.println(s"Starting API Service: $count")) *> print()
 
   def stop(): IO[Unit] = IO.println("Closing the API Service")
 
