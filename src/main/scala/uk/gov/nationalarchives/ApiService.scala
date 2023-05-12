@@ -1,6 +1,7 @@
 package uk.gov.nationalarchives
 
-import cats.effect.IO
+import cats.effect.{IO, Resource}
+import cats.effect.std.Supervisor
 
 import scala.concurrent.duration.DurationInt
 
@@ -14,10 +15,25 @@ class ApiService {
     for {
       time <- IO.realTimeInstant
       _ <- IO.println(s"Current data and time is $time")
-      _ <- IO.sleep(1.second)
       _ <- IO.cede
+      _ <- IO.sleep(1.second)
       _ <- print()
     } yield ()
   }
 
 }
+
+object ApiService {
+
+  def resource: Resource[IO, ApiService] = {
+    Supervisor[IO](await = false).flatMap(resource(_))
+  }
+
+  def resource(supervisor: Supervisor[IO]) : Resource[IO, ApiService] = {
+      Resource.make(
+        IO.pure(new ApiService())
+          .flatTap(apiService => supervisor.supervise(apiService.start))
+      )(_.stop()) // TODO(AR) can we use .stop() here or should this go into an .onCancel in the Acquire phase?
+  }
+}
+

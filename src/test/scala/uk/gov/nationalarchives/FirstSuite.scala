@@ -13,15 +13,27 @@ object FirstSuite extends IOSuite {
   type Res = ApiService
 
   // Create a Supervisor of ApiService.start() as a shared Resource
-  def sharedResource : Resource[IO, Res] = Supervisor[IO](await = false).flatMap { supervisor =>
+  override def sharedResource : Resource[IO, Res] = ApiService.resource
+
+    /* Supervisor[IO](await = false).flatMap { supervisor =>
     Resource.make(
       IO.pure(new ApiService())
         .flatTap(apiService => supervisor.supervise(apiService.start))
-    )(_ => IO.unit/*_.stop()*/)   // TODO(AR) can we use .stop() here or should this go into an .onCancel in the Acquire phase?
+    )(_.stop())   // TODO(AR) can we use .stop() here or should this go into an .onCancel in the Acquire phase?
+  } */
+
+  test("test 1") { supervisor =>
+    for {
+      _ <- IO.println(s"test 1 supervisor is: ${supervisor.hashCode()}")
+      _ <- IO.println(s"Test waiting for $delay seconds...")
+      _ <- IO.sleep(delay.seconds)
+      _ <- IO.println(s"Test waited for $delay seconds; DONE")
+    } yield expect(1 == 1)
   }
 
-  loggedTest("test, but resource not visible") { log =>
+  test("test 2") { supervisor =>
     for {
+      _ <- IO.println(s"test 2 supervisor is: ${supervisor.hashCode()}")
       _ <- IO.println(s"Test waiting for $delay seconds...")
       _ <- IO.sleep(delay.seconds)
       _ <- IO.println(s"Test waited for $delay seconds; DONE")
